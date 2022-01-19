@@ -10,6 +10,16 @@ type LoginForm = {
   password: string;
 };
 
+export async function register({
+  username,
+  password
+}: LoginForm) {
+  const passwordHash = await bcrypt.hash(password, 10);
+  return db.user.create({
+    data: { username, passwordHash }
+  });
+}
+
 export async function login({
   username,
   password
@@ -46,7 +56,6 @@ const storage = createCookieSessionStorage({
   }
 });
 
-
 export function getUserSession(request: Request) {
   return storage.getSession(request.headers.get("Cookie"));
 }
@@ -72,7 +81,6 @@ export async function requireUserId(
   }
   return userId;
 }
-
 
 export async function getUser(request: Request) {
   const userId = await getUserId(request);
@@ -100,7 +108,6 @@ export async function logout(request: Request) {
     }
   });
 }
-
 
 export async function createUserSession(
   userId: string,

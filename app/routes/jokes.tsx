@@ -9,6 +9,7 @@ import {
 import { db } from "~/utils/db.server";
 import { getUser } from "~/utils/session.server";
 import stylesUrl from "../styles/jokes.css";
+import Header from "~/components/Header";
 
 export const links: LinksFunction = () => {
   return [
@@ -46,7 +47,8 @@ export default function JokesRoute() {
 
   return (
     <div className="jokes-layout">
-      <header className="jokes-header">
+      <Header user={data.user} />
+      {/* <header className="jokes-header">
         <div className="container">
           <h1 className="home-link">
             <Link
@@ -71,10 +73,12 @@ export default function JokesRoute() {
             <Link to="/login">Login</Link>
           )}
         </div>
-      </header>
+      </header> */}
       <main className="jokes-main">
         <div className="container">
           <div className="jokes-list">
+            <Link to="all">All Jokes</Link>
+            <br></br>
             <Link to=".">Get a random joke</Link>
             <p>Here are a few more jokes to check out:</p>
             <ul>

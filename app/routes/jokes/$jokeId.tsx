@@ -12,6 +12,7 @@ type LoaderData = { joke: JokeModel };
 export const loader: LoaderFunction = async ({
   params
 }) => {
+  console.log("params: ", params);
   const joke = await db.joke.findUnique({
     where: { id:params.jokeId }
   });
