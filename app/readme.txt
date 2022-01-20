@@ -1,4 +1,6 @@
 
+cd 'C:\Users\Bash Warrior King\Projects\Remix\L2\remix-jokes'
+
 Just finished this.
 https://remix.run/docs/en/v1/tutorials/jokes#mutations
 

@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "remix";
+import { LinksFunction, LoaderFunction, MetaFunction, redirect } from "remix";
 import { Links, LiveReload, Outlet, useCatch, Meta, Scripts } from "remix";
 
 import globalStylesUrl from "./styles/global.css";
@@ -24,6 +24,31 @@ export const links: LinksFunction = () => {
     }
   ];
 };
+
+// LOADER
+// export let loader: LoaderFunction = ({ request }) => {
+//   // upgrade people to https automatically
+
+//   let url = new URL(request.url);
+//   let hostname = url.hostname;
+//   let proto = request.headers.get("X-Forwarded-Proto") ?? url.protocol;
+
+//   url.host =
+//     request.headers.get("X-Forwarded-Host") ??
+//     request.headers.get("host") ??
+//     url.host;
+//   url.protocol = "https:";
+
+//   if (proto === "http" && hostname !== "localhost") {
+//     return redirect(url.toString(), {
+//       headers: {
+//         "X-Forwarded-Proto": "https",
+//       },
+//     });
+//   }
+//   return {};
+// };
+
 
 // SEO
 export const meta: MetaFunction = () => {
@@ -56,8 +81,8 @@ function Document({
         <title>{title}</title>
         <Links />
       </head>
-      <body>
-        {children}
+      <body>        
+        {children}       
         <Scripts />
         {process.env.NODE_ENV === "development" ? (
           <LiveReload />
@@ -78,8 +103,9 @@ export default function App() {
 
 // CATCH BOUNDARY
 export function CatchBoundary() {
-  const caught = useCatch();
+  const caught = useCatch();  
   console.log("CATCH_BOUNDARY in root.tsx");
+
   return (
     <Document
       title={`${caught.status} ${caught.statusText}`}
@@ -96,6 +122,7 @@ export function CatchBoundary() {
 // ERROR BOUNDARY
 export function ErrorBoundary({ error }: { error: Error }) {
   console.log("ERROR_BOUNDARY in root.tsx: ", error);
+
   return (
     <Document title="Uh-oh!">
       <div className="error-container">

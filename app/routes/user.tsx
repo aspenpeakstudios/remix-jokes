@@ -21,7 +21,7 @@ export const links: LinksFunction = () => {
 };
 
 type LoaderData = {
-  user: User;  
+  user: User | null;  
 };
 
 export const loader: LoaderFunction = async ({
