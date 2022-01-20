@@ -1,11 +1,10 @@
 // import { User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Link } from "remix";
 import stylesUrl from "../styles/jokes.css";
 
 type UserProps = {
-    user: {
-        username: string;    
-    }
+  user: User | null;
 }
 
 export default function({user}: UserProps) {
@@ -24,7 +23,7 @@ export default function({user}: UserProps) {
           </h1>
           {user ? (
             <div className="user-info">
-              <span>{`Hi ${user.username}`}</span>
+              <span>{`Hi ${user?.username}`}</span>
               <form action="/logout" method="post">
                 <button type="submit" className="button">
                   Logout
@@ -37,4 +36,14 @@ export default function({user}: UserProps) {
         </div>
       </header>
     );
+}
+
+
+// ERROR BOUNDARY
+export function ErrorBoundary({ error }: { error: Error }) {
+  //const { jokeId } = useParams();
+  console.log("ERROR_BOUNDARY in header.tsx ", error);
+  return (
+    <div className="error-container">{`There was an error. Sorry.`}</div>
+  );
 }

@@ -20,11 +20,13 @@ export const links: LinksFunction = () => {
   ];
 };
 
+// TYPES
 type LoaderData = {
   user: User | null;
   jokeListItems: Array<{ id: string; name: string }>;
 };
 
+// LOAD DATA
 export const loader: LoaderFunction = async ({
   request
 }) => {
@@ -34,6 +36,9 @@ export const loader: LoaderFunction = async ({
     select: { id: true, name: true }
   });
   const user = await getUser(request);
+  if (!user) {
+    console.log("User is not logged in.");
+  }
 
   const data: LoaderData = {
     jokeListItems,
@@ -47,7 +52,7 @@ export default function JokesRoute() {
 
   return (
     <div className="jokes-layout">
-      <Header user={data.user} />
+      <Header user={data?.user} />
       {/* <header className="jokes-header">
         <div className="container">
           <h1 className="home-link">
@@ -82,7 +87,7 @@ export default function JokesRoute() {
             <Link to=".">Get a random joke</Link>
             <p>Here are a few more jokes to check out:</p>
             <ul>
-              {data.jokeListItems.map(joke => (
+              {data?.jokeListItems.map(joke => (
                 <li key={joke.id}>
                   <Link to={joke.id}>{joke.name}</Link>
                 </li>
@@ -98,5 +103,15 @@ export default function JokesRoute() {
         </div>
       </main>
     </div>
+  );
+}
+
+
+// ERROR BOUNDARY
+export function ErrorBoundary({ error }: { error: Error }) {
+  //const { jokeId } = useParams();
+  console.log("ERROR_BOUNDARY in jokes.tsx ", error);
+  return (
+    <div className="error-container">{`There was an error loading jokes. Sorry.`}</div>
   );
 }

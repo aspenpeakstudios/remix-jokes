@@ -1,35 +1,120 @@
-import type { LoaderFunction } from "remix";
-import { Link, useLoaderData } from "remix";
+import type { ActionFunction, LoaderFunction } from "remix";
+import { Link, useLoaderData, useCatch, redirect, useParams } from "remix";
 import type { Joke as JokeModel } from "@prisma/client";
 import { db } from "~/utils/db.server";
 import Joke  from "../../components/Joke";
+import { getUserId, requireUserId } from "~/utils/session.server";
 
 // TYPES
-type LoaderData = { joke: JokeModel };
+type LoaderData = { joke: JokeModel, isOwner: boolean };
 
-// DATA
+// LOAD DATA
 //  Get the id from the URL and find in database.
 export const loader: LoaderFunction = async ({
+  request,
   params
 }) => {
-  console.log("params: ", params);
+  const userId = await getUserId(request);
+
   const joke = await db.joke.findUnique({
     where: { id:params.jokeId }
   });
-  if (!joke) throw new Error("Joke not found");
-  const data: LoaderData = { joke };
+  if (!joke) throw new Response("What a joke!  Not found", { status: 404 });
+  const data: LoaderData = { joke, isOwner: userId === joke.jokesterId };
   return data;
 }
+
+// POST DATA
+export const action: ActionFunction = async ({
+  request,
+  params
+}) => {
+  const form = await request.formData();
+  if (form.get("_method") === "delete") {
+    console.log("Beginning Delete Logic");
+    const userId = await requireUserId(request);
+    const joke = await db.joke.findUnique({
+      where: { id: params.jokeId }
+    });
+    if (!joke) {
+      console.log("Joke not found.");
+      throw new Response(
+        "Can't delete what does not exist",
+        { status: 404 }
+      );
+    }
+    if (joke.jokesterId !== userId) {
+      console.log("User did not create joke.");
+      throw new Response(
+        "Pssh, nice try. That's not your joke",
+        {
+          status: 401
+        }
+      );
+    }
+    console.log("Ending Delete Logic");
+    await db.joke.delete({ where: { id: params.jokeId } });
+    return redirect("/jokes");
+  }
+};
+
 
 // HTML
 export default function JokeRoute() {
   const data = useLoaderData<LoaderData>();  
     return (
       <div>
-        <p>Here's your hilarious joke:</p>
-        <p className="joke-text">{data.joke.content}</p>
-        {/* <Joke words={data.joke.content} /> */}
-        <Link to=".">"{data.joke.name}" Permalink</Link>
-      </div>
+      <p>Here's your hilarious joke:</p>
+      <p>{data.joke.content}</p>
+      <Link to=".">{data.joke.name} Permalink</Link>
+      {data.isOwner ? (
+        <form method="post">
+          <input
+            type="hidden"
+            name="_method"
+            value="delete"
+          />
+          <button type="submit" className="button">
+            Delete
+          </button>
+        </form>
+      ): null}
+    </div>
     );
   }
+
+
+// CATCH BOUNDARY
+export function CatchBoundary() {
+  const caught = useCatch();
+  const params = useParams();
+  console.log("CATCH_BOUNDARY in $jokeId.tsx");
+  switch (caught.status) {
+    case 404: {
+      return (
+        <div className="error-container">
+          Huh? What the heck is {params.jokeId}?
+        </div>
+      );
+    }
+    case 401: {
+      return (
+        <div className="error-container">
+          Sorry, but {params.jokeId} is not your joke.
+        </div>
+      );
+    }
+    default: {
+      throw new Error(`Unhandled error: ${caught.status}`);
+    }
+  }
+}
+
+// ERROR BOUNDARY
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+  const { jokeId } = useParams();
+  return (
+    <div className="error-container">{`There was an error loading joke by the id ${jokeId}. Sorry.`}</div>
+  );
+}
