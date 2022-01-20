@@ -2,7 +2,7 @@ import type { LoaderFunction } from "remix";
 import { Link, useLoaderData } from "remix";
 import type { Joke as JokeModel, User as UserModel } from "@prisma/client";
 import { db } from "~/utils/db.server";
-import Joke  from "../../components/Joke";
+import Joke  from "../../components/joke";
 import formatDate from "~/utils/formatDate";
 
 // TYPES

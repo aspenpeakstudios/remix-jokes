@@ -1,7 +1,8 @@
-import type { ActionFunction, LoaderFunction } from "remix";
-import { useActionData, redirect, json, useCatch, Link } from "remix";
+import { ActionFunction, LoaderFunction, useTransition } from "remix";
+import { useActionData, redirect, json, useCatch, Link, Form } from "remix";
 import { db } from "~/utils/db.server";
 import { requireUserId, getUserId } from "~/utils/session.server";
+import { JokeDisplay } from "~/components/joke";
 
 
 // TYPES
@@ -75,60 +76,73 @@ export const action: ActionFunction = async ({
 // HTML
 export default function NewJokeRoute() {
   const actionData = useActionData<ActionData>();
+  const transition = useTransition();
 
-    return (
-      <div>
-        <p>Add your own hilarious joke</p>
-        <form method="post">
+  if (transition.submission) {    
+    const name = transition.submission.formData.get("name");    
+    const content = transition.submission.formData.get("content");
 
-          {/* NAME */}
-          <div>            
-            <label>
-              Name: 
-              <input 
-                type="text" 
-                name="name" 
-                // for validation errors
-                defaultValue={actionData?.fields?.name}
-                aria-invalid={Boolean(actionData?.fieldErrors?.name) || undefined}
-                aria-describedby={actionData?.fieldErrors?.name ? "name-error" : undefined}
-              />
-            </label>
-            {/* Display error if validation error exists for this field */}
-            {actionData?.fieldErrors?.name ? (
-              <p className="form-validation-error" role="alert" id="name-error">{actionData.fieldErrors.name}</p>
-            ): null}
-          </div>
-
-          {/* CONTENT */}
-          <div>
-            <label>
-              Content: 
-              <textarea 
-                name="content" 
-                // for validation errors
-                defaultValue={actionData?.fields?.content}
-                aria-invalid={Boolean(actionData?.fieldErrors?.content) || undefined}
-                aria-describedby={actionData?.fieldErrors?.content ? "content-error" : undefined}
-              />              
-            </label>
-            {/* Display error if validation error exists for this field */}
-            {actionData?.fieldErrors?.content ? (
-              <p className="form-validation-error" role="alert" id="content-error">{actionData.fieldErrors.content}</p>
-            ) : null}
-          </div>
-
-          {/* SUBMIT */}
-          <div>
-            <button type="submit" className="button">
-              Add
-            </button>
-          </div>
-
-        </form>
-      </div>
-    );
+    if (typeof name === "string" && typeof content === "string" &&
+    !validateJokeName(name) && !validateJokeContent(content)) {
+      return (
+        <JokeDisplay joke={{name, content }} isOwner={true} canDelete={false} />
+      );
+    }
   }
+
+  return (
+    <div>
+      <p>Add your own hilarious joke</p>
+      <Form method="post">
+
+        {/* NAME */}
+        <div>            
+          <label>
+            Name: 
+            <input 
+              type="text" 
+              name="name" 
+              // for validation errors
+              defaultValue={actionData?.fields?.name}
+              aria-invalid={Boolean(actionData?.fieldErrors?.name) || undefined}
+              aria-describedby={actionData?.fieldErrors?.name ? "name-error" : undefined}
+            />
+          </label>
+          {/* Display error if validation error exists for this field */}
+          {actionData?.fieldErrors?.name ? (
+            <p className="form-validation-error" role="alert" id="name-error">{actionData.fieldErrors.name}</p>
+          ): null}
+        </div>
+
+        {/* CONTENT */}
+        <div>
+          <label>
+            Content: 
+            <textarea 
+              name="content" 
+              // for validation errors
+              defaultValue={actionData?.fields?.content}
+              aria-invalid={Boolean(actionData?.fieldErrors?.content) || undefined}
+              aria-describedby={actionData?.fieldErrors?.content ? "content-error" : undefined}
+            />              
+          </label>
+          {/* Display error if validation error exists for this field */}
+          {actionData?.fieldErrors?.content ? (
+            <p className="form-validation-error" role="alert" id="content-error">{actionData.fieldErrors.content}</p>
+          ) : null}
+        </div>
+
+        {/* SUBMIT */}
+        <div>
+          <button type="submit" className="button">
+            Add
+          </button>
+        </div>
+
+      </Form>
+    </div>
+  );
+}
 
 
 // CATCH BOUNDARY

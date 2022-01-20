@@ -9,7 +9,7 @@ import {
 import { db } from "~/utils/db.server";
 import { getUser } from "~/utils/session.server";
 import stylesUrl from "../styles/jokes.css";
-import Header from "~/components/Header";
+import Header from "~/components/header";
 
 export const links: LinksFunction = () => {
   return [
@@ -82,18 +82,18 @@ export default function JokesRoute() {
       <main className="jokes-main">
         <div className="container">
           <div className="jokes-list">
-            <Link to="all">All Jokes</Link>
+            <Link prefetch="intent" to="all">All Jokes</Link>
             <br></br>
-            <Link to=".">Get a random joke</Link>
+            <Link prefetch="intent" to=".">Get a random joke</Link>
             <p>Here are a few more jokes to check out:</p>
             <ul>
               {data?.jokeListItems.map(joke => (
                 <li key={joke.id}>
-                  <Link to={joke.id}>{joke.name}</Link>
+                  <Link prefetch="intent" to={joke.id}>{joke.name}</Link>
                 </li>
               ))}
             </ul>
-            <Link to="new" className="button">
+            <Link prefetch="intent" to="new" className="button">
               Add your own
             </Link>
           </div>

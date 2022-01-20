@@ -1,34 +1,36 @@
-import type { ActionFunction, LinksFunction } from "remix";
-import {
-  useActionData,
-  json,
-  useSearchParams,
-  Link
-} from "remix";
+import type { ActionFunction, LinksFunction, MetaFunction } from "remix";
+import { useActionData, json, useSearchParams, Link, Form } from "remix";
 import { db } from "~/utils/db.server";
-import {
-  createUserSession,
-  login,
-  register
-} from "~/utils/session.server";
+import { createUserSession, login, register } from "~/utils/session.server";
 import stylesUrl from "../styles/login.css";
 
+// IMPORT STYLES
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
+// SEO
+export const meta: MetaFunction = () => {
+  return {
+    title: "Remix Jokes | Login",
+    description:
+      "Login to submit your own jokes to Remix Jokes!"
+  };
+};
+
+// FIELD VALIDATION
 function validateUsername(username: unknown) {
   if (typeof username !== "string" || username.length < 3) {
     return `Usernames must be at least 3 characters long`;
   }
 }
-
 function validatePassword(password: unknown) {
   if (typeof password !== "string" || password.length < 6) {
     return `Passwords must be at least 6 characters long`;
   }
 }
 
+// TYPES
 type ActionData = {
   formError?: string;
   fieldErrors?: {
@@ -41,10 +43,9 @@ type ActionData = {
     password: string;
   };
 };
+const badRequest = (data: ActionData) => json(data, { status: 400 });
 
-const badRequest = (data: ActionData) =>
-  json(data, { status: 400 });
-
+// POST 
 export const action: ActionFunction = async ({
   request
 }) => {
@@ -118,7 +119,7 @@ export default function Login() {
     <div className="container">
       <div className="content" data-light="">
         <h1>Login</h1>
-        <form
+        <Form
           method="post"
           aria-describedby={
             actionData?.formError
@@ -229,7 +230,7 @@ export default function Login() {
           <button type="submit" className="button">
             Submit
           </button>
-        </form>
+        </Form>
       </div>
       <div className="links">
         <ul>
