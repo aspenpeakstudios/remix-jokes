@@ -9,3 +9,5 @@ npm-debug.og
 /public/build
 /prisma/dev.db
 .env
+
+/*readme.txt
