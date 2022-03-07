@@ -35,4 +35,5 @@ model AuditLogs {
   area      String @default("app")
   message   String @default("new message")
   additional String? 
+  author    String @default("system")
 }
