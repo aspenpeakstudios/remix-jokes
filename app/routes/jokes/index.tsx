@@ -10,6 +10,7 @@ type LoaderData = { randomJoke: JokeModel };
 export const loader: LoaderFunction = async () => {
 try {
   const count = await db.joke.count();
+  console.log("Number of jokes in database: ", count);
   const randomRowNumber = Math.floor(Math.random() * count);
   const [randomJoke] = await db.joke.findMany({
     take: 1,
@@ -24,7 +25,7 @@ try {
   return data;
 }
 catch(ex) {
-  console.log("Error in jokes/index.tsx", ex.message);
+  console.log("Error in jokes/index.tsx", ex);
 }
 return null;
 
