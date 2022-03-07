@@ -2,7 +2,7 @@ import { ActionFunction, LoaderFunction, useTransition } from "remix";
 import { useActionData, redirect, json, useCatch, Link, Form } from "remix";
 import { db } from "~/utils/db.server";
 import { requireUserId, getUserId } from "~/utils/session.server";
-import { JokeDisplay } from "~/components/joke";
+import { JokeDisplay } from "~/components/Joke";
 
 
 // TYPES

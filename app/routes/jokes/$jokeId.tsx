@@ -2,7 +2,7 @@ import type { ActionFunction, LoaderFunction, MetaFunction } from "remix";
 import { Link, useLoaderData, useCatch, redirect, useParams } from "remix";
 import type { Joke as JokeModel } from "@prisma/client";
 import { db } from "~/utils/db.server";
-import { JokeDisplay }  from "app/components/joke";
+import { JokeDisplay }  from "~/components/Joke";
 import { getUserId, requireUserId } from "~/utils/session.server";
 
 // SEO

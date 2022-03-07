@@ -6,7 +6,7 @@ import {
   Outlet,
   useLoaderData
 } from "remix";
-import Header from "~/components/header";
+import Header from "~/components/Header";
 import { db } from "~/utils/db.server";
 import { getUser } from "~/utils/session.server";
 import stylesUrl from "../styles/jokes.css";

@@ -9,7 +9,7 @@ import {
 import { db } from "~/utils/db.server";
 import { getUser } from "~/utils/session.server";
 import stylesUrl from "../styles/jokes.css";
-import Header from "app/components/header";
+import Header from "~/components/Header";
 
 export const links: LinksFunction = () => {
   return [
