@@ -7,7 +7,7 @@ type UserProps = {
   user: User | null;
 }
 
-export default function({user}: UserProps) {
+export default function Header({user}: UserProps) {
     return (
         <header className="jokes-header">
         <div className="container">
