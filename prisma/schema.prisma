@@ -29,3 +29,10 @@ model Joke {
   name       String
   content    String
 }
+
+model AuditLogs { 
+  id        String @id @default(uuid())
+  area      String @default("app")
+  message   String @default("new message")
+  additional String? 
+}
