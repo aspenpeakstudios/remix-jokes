@@ -5,3 +5,7 @@ npm run dev
 
 Docs
 https://remix.run/docs/en/v1/tutorials/jokes
+
+
+heroku config:set GITHUB_USERNAME=joesmith
+heroku config:set SESSION_SECRET="TheBigElkBuglesLoud"

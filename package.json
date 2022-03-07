@@ -9,7 +9,7 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
-    "postinstall": "remix setup node",
+    "postinstall": "prisma generate && remix setup node",
     "start": "remix-serve build"
   },
   "dependencies": {
