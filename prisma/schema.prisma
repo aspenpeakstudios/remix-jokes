@@ -30,9 +30,11 @@ model Joke {
   content    String
 }
 
-model AuditLogs { 
+model AuditLog { 
   id        String @id @default(uuid())
-  area      String @default("app")
+  createdAt    DateTime @default(now())
+  action    String @default("app")
+  fileName  String?
   message   String @default("new message")
   additional String? 
   author    String @default("system")

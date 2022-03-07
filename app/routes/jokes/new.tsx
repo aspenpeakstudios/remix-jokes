@@ -70,6 +70,17 @@ export const action: ActionFunction = async ({
   const joke = await db.joke.create({ 
     data: { ...fields, jokesterId: userId }
   });
+  console.log("new joke: ", joke);
+
+  if (joke) {
+    console.log("updating audit log");
+    const auditLog = await db.auditLog.create({
+      data: { author: userId, action: "New Joke", fileName: "routes/jokes/new.tsx", 
+      message: `New Joke Created.  [name: ${name}], [content: ${content}]` }
+    });
+    console.log("audit log updated");
+  }
+
   return redirect(`/jokes/${joke.id}`);
 }
 

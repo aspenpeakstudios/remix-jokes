@@ -78,7 +78,21 @@ export const action: ActionFunction = async ({
       );
     }
     console.log("Ending Delete Logic");
+
     await db.joke.delete({ where: { id: params.jokeId } });
+
+    if (joke) {
+      console.log("updating audit log");
+      const auditLog = await db.auditLog.create({
+        data: { author: userId, action: "Delete Joke", fileName: "routes/jokes/$jokeId.tsx", 
+        message: `Joke Deleted.  
+          [jokeId: ${joke.id}], 
+          [title: ${joke.name}], 
+          [content: ${joke.content}]` }
+      });
+      console.log("audit log updated");
+    }
+
     return redirect("/jokes");
   }
 };
