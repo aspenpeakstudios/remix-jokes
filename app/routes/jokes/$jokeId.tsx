@@ -44,7 +44,7 @@ try {
   return data;
 }
 catch (ex) {
-  console.log("Error in jokeId.tsx", ex.message);
+  console.log("Error in jokeId.tsx", ex);
 }
 return null;
 }
