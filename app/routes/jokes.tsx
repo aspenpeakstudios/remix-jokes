@@ -30,21 +30,30 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({
   request
 }) => {
-  const jokeListItems = await db.joke.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    select: { id: true, name: true }
-  });
-  const user = await getUser(request);
-  if (!user) {
-    console.log("User is not logged in.");
-  }
+  try {
 
-  const data: LoaderData = {
-    jokeListItems,
-    user
-  };
-  return data;
+    const jokeListItems = await db.joke.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      select: { id: true, name: true }
+    });
+    console.log(jokeListItems);
+    const user = await getUser(request);
+    if (!user) {
+      console.log("User is not logged in.");
+    }
+
+    const data: LoaderData = {
+      jokeListItems,
+      user
+    };  
+    return data;
+  }
+  catch (ex) {
+    console.log("Error getting jokes: ", ex.message);
+    Promise.resolve(true);  
+  }
+return null;
 };
 
 export default function JokesRoute() {

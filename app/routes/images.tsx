@@ -145,7 +145,8 @@ const uploadImage = () => {
   data.append("file", image);
   data.append("upload_preset", "fhew5n5e");
   data.append("cloud_name", "drvcbv6ec");
-  fetch("https://api.cloudinary.com/v1_1/drvcbv6ec/image/upload", {
+  // fetch("https://api.cloudinary.com/v1_1/drvcbv6ec/image/upload/q_auto,f_auto", {
+  fetch("https://api.cloudinary.com/v1_1/drvcbv6ec/image/upload/", {
     method:"post",
     body:data
   })

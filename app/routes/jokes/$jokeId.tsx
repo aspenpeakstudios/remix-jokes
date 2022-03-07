@@ -32,6 +32,7 @@ export const loader: LoaderFunction = async ({
   request,
   params
 }) => {
+try {
   const userId = await getUserId(request);
 
   const joke = await db.joke.findUnique({
@@ -39,7 +40,13 @@ export const loader: LoaderFunction = async ({
   });
   if (!joke) throw new Response("What a joke!  Not found", { status: 404 });
   const data: LoaderData = { joke, isOwner: userId === joke.jokesterId };
+
   return data;
+}
+catch (ex) {
+  console.log("Error in jokeId.tsx", ex.message);
+}
+return null;
 }
 
 // POST DATA
